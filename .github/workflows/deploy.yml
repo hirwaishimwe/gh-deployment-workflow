@@ -8,26 +8,40 @@ on:
       - "index.html"
 
 jobs:
+  # 1) Build (or gather) the website files and upload them as an artifact
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # Upload the repository content (including index.html) as a Pages artifact
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v2
+      # If you have a build step (e.g. npm install && npm run build), do it here.
+      # For a basic static index.html site, there's nothing else needed.
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          # '.' means "upload everything in the repository root"
-          # If you build or generate your site into a subfolder, specify that instead.
+          # This is the name of the artifact as it will be stored.
+          name: pages
+          # The path to your final website files. Use '.' if index.html is at repo root.
           path: .
-  
+
+  # 2) Download the artifact and deploy it to GitHub Pages
   deploy:
     needs: build
     runs-on: ubuntu-latest
     permissions:
-      pages: write
-      id-token: write
+      pages: write      # Needed to publish to Pages
+      id-token: write   # Needed to authenticate to GitHub Pages
     steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: pages
+          path: .
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
+        with:
+          # The folder containing the site files you want to deploy
+          folder: .
