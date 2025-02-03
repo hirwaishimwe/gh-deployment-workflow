@@ -14,28 +14,20 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v3
 
-      # (Optional) If you have a build step (e.g., npm run build), do it here.
-      # For a basic static site, there's no build step needed.
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
+      # Upload the repository content (including index.html) as a Pages artifact
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          # Give the artifact a name (e.g., "my-pages-artifact").
-          name: my-pages-artifact
-          # Path to your final website files. '.' if your index.html is at the root.
+          # '.' means "upload everything in the repository root"
+          # If you build or generate your site into a subfolder, specify that instead.
           path: .
-
+  
   deploy:
-    # This job depends on the "build" job
     needs: build
     runs-on: ubuntu-latest
     permissions:
       pages: write
       id-token: write
-
     steps:
       - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v1
-        with:
-          # Match the artifact name used in the "build" job above.
-          artifact_name: my-pages-artifact
+        uses: actions/deploy-pages@v2
