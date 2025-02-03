@@ -13,16 +13,10 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
-
-      # (Optional) Add any build steps here if you need to generate site files.
-      # For a basic single-page site, there's nothing else to do.
-
       - name: Upload site artifact
         uses: actions/upload-artifact@v4
         with:
-          # This is what your artifact will be called
           name: pages
-          # '.' if your index.html is at the root of the repo
           path: .
 
   deploy:
@@ -31,7 +25,6 @@ jobs:
     permissions:
       pages: write
       id-token: write
-
     steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v2
